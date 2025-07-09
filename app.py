@@ -12,18 +12,16 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 app = Flask(__name__)
 
+# Drop Columns Transformer. Ensure only valid predictor cols are fed to model
 class DropColumnsTransformer(BaseEstimator, TransformerMixin):
-    def __init__(self, columns_to_drop):
-        self.columns_to_drop = columns_to_drop
+    def __init__(self, columns_to_keep):
+        self.columns_to_keep = columns_to_keep
 
     def fit(self, X, y=None):
         return self
     
     def transform(self, X):
-        # Make a copy to avoid modifying the original data
-        X_transformed = X.copy()
-        # Drop the specified columns
-        return X_transformed.drop(columns=self.columns_to_drop, errors='ignore')
+        return X[self.columns_to_keep].copy()
 
 with open('trained_model.pkl', 'rb') as file:
     model = pickle.load(file)
